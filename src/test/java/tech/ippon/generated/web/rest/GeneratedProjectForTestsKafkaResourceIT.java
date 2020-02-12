@@ -1,6 +1,5 @@
 package tech.ippon.generated.web.rest;
 
-import tech.ippon.generated.config.KafkaProperties;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -14,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.KafkaContainer;
+import tech.ippon.generated.config.KafkaProperties;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -24,7 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class GeneratedProjectForTestsKafkaResourceIT {
 
@@ -52,9 +54,9 @@ class GeneratedProjectForTestsKafkaResourceIT {
         Map<String, String> producerProps = getProducerProps();
         kafkaProperties.setProducer(new HashMap<>(producerProps));
 
-        Map<String, String> consumerProps = getConsumerProps("default-group");
-        consumerProps.put("client.id", "default-client");
-        kafkaProperties.setConsumer(consumerProps);
+        Map<String, Map<String, Object>> props = getConsumerProps("default-group");
+        props.get("string").put("client.id", "default-client");
+        kafkaProperties.setConsumer(props);
 
         GeneratedProjectForTestsKafkaResource kafkaResource = new GeneratedProjectForTestsKafkaResource(kafkaProperties);
 
@@ -107,14 +109,16 @@ class GeneratedProjectForTestsKafkaResourceIT {
         return producerProps;
     }
 
-    private Map<String, String> getConsumerProps(String group) {
-        Map<String, String> consumerProps = new HashMap<>();
+    private Map<String, Map<String, Object>> getConsumerProps(String group) {
+        Map<String, Map<String, Object>> props = new HashMap<>();
+        Map<String, Object> consumerProps = new HashMap<>();
         consumerProps.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         consumerProps.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         consumerProps.put("bootstrap.servers", kafkaContainer.getBootstrapServers());
         consumerProps.put("auto.offset.reset", "earliest");
         consumerProps.put("group.id", group);
-        return consumerProps;
+        props.put("string", consumerProps);
+        return props;
     }
 }
 

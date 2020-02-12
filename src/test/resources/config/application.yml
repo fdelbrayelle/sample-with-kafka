@@ -84,7 +84,7 @@ jhipster:
     name: 'generatedProjectForTestsApp'
   logging:
     # To test json console appender
-    use-json-format: true # By default, logs are in Json format
+    use-json-format: false # By default, logs are in Json format
     logstash:
       enabled: false
       host: localhost
@@ -105,15 +105,18 @@ jhipster:
       enabled: true
       report-frequency: 60 # in seconds
 kafka:
-  bootstrap-servers: localhost:9092
+  '[bootstrap.servers]': localhost:9092
   consumer:
-    key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    group.id: generated-project-for-tests
-    auto.offset.reset: earliest
+    string:
+      name: topic-string
+      enabled: false
+      '[key.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
+      '[value.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
+      '[group.id]': generated-project-for-tests
+      '[auto.offset.reset]': earliest
   producer:
-    key.serializer: org.apache.kafka.common.serialization.StringSerializer
-    value.serializer: org.apache.kafka.common.serialization.StringSerializer
+    '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
+    '[value.serializer]': org.apache.kafka.common.serialization.StringSerializer
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

@@ -12,7 +12,7 @@ public class KafkaProperties {
 
     private String bootStrapServers = "localhost:9092";
 
-    private Map<String, String> consumer = new HashMap<>();
+    private Map<String, Map<String, Object>> consumer = new HashMap<>();
 
     private Map<String, String> producer = new HashMap<>();
 
@@ -24,6 +24,12 @@ public class KafkaProperties {
         this.bootStrapServers = bootStrapServers;
     }
 
+    public Map<String, Object> getConsumerConfiguration(final String consumerName) {
+//        final Properties properties = new Properties();
+//        final Map<String, Object> consumerConfiguration = consumer.get(consumerName);
+        return consumer.get(consumerName);
+    }
+
     public Map<String, Object> getConsumerProps() {
         Map<String, Object> properties = new HashMap<>(this.consumer);
         if (!properties.containsKey("bootstrap.servers")) {
@@ -32,7 +38,7 @@ public class KafkaProperties {
         return properties;
     }
 
-    public void setConsumer(Map<String, String> consumer) {
+    public void setConsumer(Map<String, Map<String, Object>> consumer) {
         this.consumer = consumer;
     }
 

@@ -1,6 +1,6 @@
 package tech.ippon.generated.web.rest;
 
-import tech.ippon.generated.config.KafkaProperties;
+import tech.ippon.generated.config.Constants;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import tech.ippon.generated.config.KafkaProperties;
 
 import java.time.Duration;
 import java.time.Instant;
