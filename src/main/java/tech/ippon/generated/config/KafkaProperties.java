@@ -14,7 +14,7 @@ public class KafkaProperties {
 
     private Map<String, Map<String, Object>> consumer = new HashMap<>();
 
-    private Map<String, String> producer = new HashMap<>();
+    private Map<String, Map<String, Object>> producer = new HashMap<>();
 
     public String getBootStrapServers() {
         return bootStrapServers;
@@ -25,16 +25,27 @@ public class KafkaProperties {
     }
 
     public Map<String, Object> getConsumerConfiguration(final String consumerName) {
-//        final Properties properties = new Properties();
-//        final Map<String, Object> consumerConfiguration = consumer.get(consumerName);
-        return consumer.get(consumerName);
+        Map<String, Object> properties = consumer.get(consumerName);
+        addBootstrapServers(properties);
+        return properties;
+    }
+
+    public Map<String, Object> getProducerConfiguration(final String producerName) {
+        Map<String, Object> properties = producer.get(producerName);
+        addBootstrapServers(properties);
+        return properties;
+    }
+
+    // TODO rename this property from the yml directly to avoid this "mapping" ?
+    private void addBootstrapServers(Map<String, Object> properties) {
+        if (!properties.containsKey("bootstrap.servers")) {
+            properties.put("bootstrap.servers", this.bootStrapServers);
+        }
     }
 
     public Map<String, Object> getConsumerProps() {
         Map<String, Object> properties = new HashMap<>(this.consumer);
-        if (!properties.containsKey("bootstrap.servers")) {
-            properties.put("bootstrap.servers", this.bootStrapServers);
-        }
+        addBootstrapServers(properties);
         return properties;
     }
 
@@ -44,13 +55,11 @@ public class KafkaProperties {
 
     public Map<String, Object> getProducerProps() {
         Map<String, Object> properties = new HashMap<>(this.producer);
-        if (!properties.containsKey("bootstrap.servers")) {
-            properties.put("bootstrap.servers", this.bootStrapServers);
-        }
+        addBootstrapServers(properties);
         return properties;
     }
 
-    public void setProducer(Map<String, String> producer) {
+    public void setProducer(Map<String, Map<String, Object>> producer) {
         this.producer = producer;
     }
 }

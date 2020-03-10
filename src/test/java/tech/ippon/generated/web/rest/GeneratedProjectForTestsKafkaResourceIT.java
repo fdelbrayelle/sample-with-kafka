@@ -51,7 +51,7 @@ class GeneratedProjectForTestsKafkaResourceIT {
     @BeforeEach
     void setup() {
         KafkaProperties kafkaProperties = new KafkaProperties();
-        Map<String, String> producerProps = getProducerProps();
+        Map<String, Map<String, Object>> producerProps = getProducerProps();
         kafkaProperties.setProducer(new HashMap<>(producerProps));
 
         Map<String, Map<String, Object>> props = getConsumerProps("default-group");
@@ -101,12 +101,14 @@ class GeneratedProjectForTestsKafkaResourceIT {
         fail("Expected content data:value-consume not received");
     }
 
-    private Map<String, String> getProducerProps() {
-        Map<String, String> producerProps = new HashMap<>();
+    private Map<String, Map<String, Object>> getProducerProps() {
+        Map<String, Map<String, Object>> props = new HashMap<>();
+        Map<String, Object> producerProps = new HashMap<>();
         producerProps.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         producerProps.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         producerProps.put("bootstrap.servers", kafkaContainer.getBootstrapServers());
-        return producerProps;
+        props.put("string", producerProps);
+        return props;
     }
 
     private Map<String, Map<String, Object>> getConsumerProps(String group) {

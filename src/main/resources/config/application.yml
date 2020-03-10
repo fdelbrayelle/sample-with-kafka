@@ -156,8 +156,11 @@ kafka:
       '[group.id]': generated-project-for-tests
       '[auto.offset.reset]': earliest
   producer:
-    '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
-    '[value.serializer]': org.apache.kafka.common.serialization.StringSerializer
+    string:
+      name: topic-string
+      enabled: true
+      '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
+      '[value.serializer]': org.apache.kafka.common.serialization.StringSerializer
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
