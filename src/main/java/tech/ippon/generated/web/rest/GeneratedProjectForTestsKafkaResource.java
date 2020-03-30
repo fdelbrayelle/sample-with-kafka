@@ -33,7 +33,7 @@ public class GeneratedProjectForTestsKafkaResource {
 
     public GeneratedProjectForTestsKafkaResource(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
-        this.producer = new KafkaProducer<>(kafkaProperties.getProducerProps());
+        this.producer = new KafkaProducer<>(kafkaProperties.getProducerConfiguration("string"));
     }
 
     @PostMapping("/publish/{topic}")

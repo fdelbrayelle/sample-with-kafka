@@ -15,17 +15,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class GenericConsumer<T> implements Runnable {
 
-    public static final int POLL_TIMEOUT = 10_000;
     private final Logger log = LoggerFactory.getLogger(GenericConsumer.class);
+
+    public static final int POLL_TIMEOUT = 10_000;
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    private final KafkaConsumer<String, T> consumer;
+    private final KafkaConsumer<String, T> kafkaConsumer;
+
     private String topicName;
 
     public GenericConsumer(final String topicName, final Map<String, Object> properties) {
         this.topicName = topicName;
-        this.consumer = new KafkaConsumer<>(properties);
+        this.kafkaConsumer = new KafkaConsumer<>(properties);
     }
 
     @PostConstruct
@@ -36,28 +38,28 @@ public abstract class GenericConsumer<T> implements Runnable {
     @Override
     public void run() {
         try {
-            consumer.subscribe(Collections.singleton(topicName));
+            kafkaConsumer.subscribe(Collections.singleton(topicName));
             while (!closed.get()) {
-                final ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
-                for (final ConsumerRecord<String, T> record : records) {
+                ConsumerRecords<String, T> records = kafkaConsumer.poll(Duration.ofMillis(POLL_TIMEOUT));
+                for (ConsumerRecord<String, T> record : records) {
                     handleMessage(record);
                 }
-                consumer.commitSync();
+                kafkaConsumer.commitSync();
             }
-        } catch (final WakeupException e) {
+        } catch (WakeupException e) {
             // Ignore exception if closing
             if (!closed.get()) throw e;
-        } catch (final Exception e) {
-            log.error("An error occured while trying to poll records from topic!", e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         } finally {
-            consumer.close();
+            kafkaConsumer.close();
         }
     }
 
-    // Shutdown hook which can be called from a separate thread
     public void shutdown() {
+        log.info("Shutdown Kafka consumer");
         closed.set(true);
-        consumer.wakeup();
+        kafkaConsumer.wakeup();
     }
 
     protected abstract void handleMessage(ConsumerRecord<String, T> record);
