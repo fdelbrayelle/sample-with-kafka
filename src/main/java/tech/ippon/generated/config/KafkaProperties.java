@@ -43,7 +43,7 @@ public class KafkaProperties {
         }
     }
 
-    public Map<String, Object> getConsumerProps() {
+    public Map<String, Object> getConsumer() {
         Map<String, Object> properties = new HashMap<>(this.consumer);
         addBootstrapServers(properties);
         return properties;
@@ -53,7 +53,7 @@ public class KafkaProperties {
         this.consumer = consumer;
     }
 
-    public Map<String, Object> getProducerProps() {
+    public Map<String, Object> getProducer() {
         Map<String, Object> properties = new HashMap<>(this.producer);
         addBootstrapServers(properties);
         return properties;

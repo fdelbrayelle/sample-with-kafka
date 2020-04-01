@@ -1,6 +1,5 @@
 package tech.ippon.generated.web.rest;
 
-import tech.ippon.generated.config.Constants;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -37,22 +36,19 @@ public class GeneratedProjectForTestsKafkaResource {
     }
 
     @PostMapping("/publish/{topic}")
-    public PublishResult publish(@PathVariable String topic, @RequestParam String message, @RequestParam(required = false) String key) throws ExecutionException, InterruptedException {
+    public PublishResult publish(@PathVariable String topic, @RequestParam(required = false) String key, @RequestParam String message) throws ExecutionException, InterruptedException {
         log.debug("REST request to send to Kafka topic {} with key {} the message : {}", topic, key, message);
         RecordMetadata metadata = producer.send(new ProducerRecord<>(topic, key, message)).get();
         return new PublishResult(metadata.topic(), metadata.partition(), metadata.offset(), Instant.ofEpochMilli(metadata.timestamp()));
     }
 
     @GetMapping("/consume")
-    public SseEmitter consume(@RequestParam("topic") List<String> topics, @RequestParam Map<String, String> consumerParams) {
+    public SseEmitter consume(@RequestParam("topic") List<String> topics) {
         log.debug("REST request to consume records from Kafka topics {}", topics);
-        Map<String, Object> consumerProps = kafkaProperties.getConsumerProps();
-        consumerProps.putAll(consumerParams);
-        consumerProps.remove("topic");
 
         SseEmitter emitter = new SseEmitter(0L);
         sseExecutorService.execute(() -> {
-            KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps);
+            KafkaConsumer<String, String> consumer = new KafkaConsumer<>(kafkaProperties.getConsumerConfiguration("string"));
             emitter.onCompletion(consumer::close);
             consumer.subscribe(topics);
             boolean exitLoop = false;
