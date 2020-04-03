@@ -3,7 +3,7 @@
     "promptValues": {
       "packageName": "tech.ippon.generated"
     },
-    "jhipsterVersion": "6.7.0",
+    "jhipsterVersion": "6.8.0",
     "applicationType": "monolith",
     "baseName": "generated_project_for_tests",
     "packageName": "tech.ippon.generated",

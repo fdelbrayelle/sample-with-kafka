@@ -1,6 +1,7 @@
 package tech.ippon.generated.repository;
 
 import tech.ippon.generated.GeneratedProjectForTestsApp;
+
 import tech.ippon.generated.config.Constants;
 import tech.ippon.generated.config.audit.AuditEventConverter;
 import tech.ippon.generated.domain.PersistentAuditEvent;
