@@ -1,0 +1,40 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "tech.ippon.generated"
+    },
+    "jhipsterVersion": "6.7.0",
+    "applicationType": "monolith",
+    "baseName": "generated_project_for_tests",
+    "packageName": "tech.ippon.generated",
+    "packageFolder": "tech/ippon/generated",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": "kafka",
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "YzFhODc1MjFiN2ExMGFiZWVmNzRiZTQxNzU0NzNiNDQzYjM3YWRmY2QyNzdhYTgzMWJmZDI4MzcwNGYxYTFiZGEwZDJlNzE1YmQ1NjZhMWZiNWY2YzVjYmMxMDRkZWQ2MDgwY2RhOWUxNGIxY2RlYjcyNzk3MTdhYjNkNTUwNzg=",
+    "embeddableLaunchScript": false,
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "clientFramework": "angularX",
+    "clientTheme": "none",
+    "clientThemeVariant": "",
+    "creationTimestamp": 1581417629379,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "blueprints": []
+  }
+}
