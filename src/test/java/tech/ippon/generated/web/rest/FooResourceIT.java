@@ -6,25 +6,19 @@ import tech.ippon.generated.repository.FooRepository;
 import tech.ippon.generated.service.FooService;
 import tech.ippon.generated.service.dto.FooDTO;
 import tech.ippon.generated.service.mapper.FooMapper;
-import tech.ippon.generated.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Validator;
-
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static tech.ippon.generated.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,6 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Integration tests for the {@link FooResource} REST controller.
  */
 @SpringBootTest(classes = GeneratedProjectForTestsApp.class)
+
+@AutoConfigureMockMvc
+@WithMockUser
 public class FooResourceIT {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
@@ -49,35 +46,12 @@ public class FooResourceIT {
     private FooService fooService;
 
     @Autowired
-    private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-    @Autowired
-    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-    @Autowired
-    private ExceptionTranslator exceptionTranslator;
-
-    @Autowired
     private EntityManager em;
 
     @Autowired
-    private Validator validator;
-
     private MockMvc restFooMockMvc;
 
     private Foo foo;
-
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        final FooResource fooResource = new FooResource(fooService);
-        this.restFooMockMvc = MockMvcBuilders.standaloneSetup(fooResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter)
-            .setValidator(validator).build();
-    }
 
     /**
      * Create an entity for this test.
@@ -115,7 +89,7 @@ public class FooResourceIT {
         // Create the Foo
         FooDTO fooDTO = fooMapper.toDto(foo);
         restFooMockMvc.perform(post("/api/foos")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fooDTO)))
             .andExpect(status().isCreated());
 
@@ -137,7 +111,7 @@ public class FooResourceIT {
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restFooMockMvc.perform(post("/api/foos")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fooDTO)))
             .andExpect(status().isBadRequest());
 
@@ -200,7 +174,7 @@ public class FooResourceIT {
         FooDTO fooDTO = fooMapper.toDto(updatedFoo);
 
         restFooMockMvc.perform(put("/api/foos")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fooDTO)))
             .andExpect(status().isOk());
 
@@ -221,7 +195,7 @@ public class FooResourceIT {
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restFooMockMvc.perform(put("/api/foos")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fooDTO)))
             .andExpect(status().isBadRequest());
 
@@ -240,7 +214,7 @@ public class FooResourceIT {
 
         // Delete the foo
         restFooMockMvc.perform(delete("/api/foos/{id}", foo.getId())
-            .accept(TestUtil.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item

@@ -7,12 +7,12 @@ import java.util.Objects;
  * A DTO for the {@link tech.ippon.generated.domain.Foo} entity.
  */
 public class FooDTO implements Serializable {
-
+    
     private Long id;
 
     private String name;
 
-
+    
     public Long getId() {
         return id;
     }
