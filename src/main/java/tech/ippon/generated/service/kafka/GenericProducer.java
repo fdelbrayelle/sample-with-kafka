@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class GenericProducer<T> {
 
@@ -27,11 +26,11 @@ public abstract class GenericProducer<T> {
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
 
-    public void send(T message) {
-        ProducerRecord<String, T> record = new ProducerRecord<>(topicName, message);
+    public void send(final T message) {
+        final ProducerRecord<String, T> record = new ProducerRecord<>(topicName, message);
         try {
             kafkaProducer.send(record);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage(), e);
         }
     }

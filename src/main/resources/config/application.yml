@@ -162,7 +162,7 @@ kafka:
   '[bootstrap.servers]': localhost:9092
   consumer:
     string:
-      name: topic-string
+      name: foo-topic
       enabled: true
       '[key.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
       '[value.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
@@ -170,7 +170,7 @@ kafka:
       '[auto.offset.reset]': earliest
   producer:
     string:
-      name: topic-string
+      name: foo-topic
       enabled: true
       '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
       '[value.serializer]': org.apache.kafka.common.serialization.StringSerializer
