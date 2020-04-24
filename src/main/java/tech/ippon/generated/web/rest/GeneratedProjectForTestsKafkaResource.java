@@ -1,5 +1,6 @@
 package tech.ippon.generated.web.rest;
 
+import tech.ippon.generated.config.KafkaProperties;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -10,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import tech.ippon.generated.config.KafkaProperties;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -31,19 +31,18 @@ public class GeneratedProjectForTestsKafkaResource {
     private Map<String, KafkaProducer<String, Object>> producers;
     private ExecutorService sseExecutorService = Executors.newCachedThreadPool();
 
-    public GeneratedProjectForTestsKafkaResource(final KafkaProperties kafkaProperties) {
+    public GeneratedProjectForTestsKafkaResource(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
         this.producers = new HashMap<>();
-        for (final String topicName : kafkaProperties.getProducer().keySet()) {
-            this.producers.put(topicName, new KafkaProducer<>(kafkaProperties.getProducerConfiguration(topicName)));
+        for (String topicName : kafkaProperties.getProducer().keySet()) {
+            this.producers.put(topicName, new KafkaProducer<>(kafkaProperties.getProducer().get(topicName)));
         }
     }
 
     @PostMapping("/publish/{topic}")
     public PublishResult publish(@PathVariable String topic, @RequestParam(required = false) String key, @RequestParam String message) throws ExecutionException, InterruptedException {
         log.debug("REST request to send to Kafka topic {} with key {} the message : {}", topic, key, message);
-        final KafkaProducer<String, Object> producer = producers.get(topic);
-        RecordMetadata metadata = producer.send(new ProducerRecord<>(topic, key, message)).get();
+        RecordMetadata metadata = producers.get(topic).send(new ProducerRecord<>(topic, key, message)).get();
         return new PublishResult(metadata.topic(), metadata.partition(), metadata.offset(), Instant.ofEpochMilli(metadata.timestamp()));
     }
 
@@ -53,14 +52,15 @@ public class GeneratedProjectForTestsKafkaResource {
 
         SseEmitter emitter = new SseEmitter(0L);
         sseExecutorService.execute(() -> {
-            KafkaConsumer<String, String> consumer = new KafkaConsumer<>(kafkaProperties.getConsumerConfiguration("string"));
+            // topics contains at the moment only one topic
+            KafkaConsumer<String, Object> consumer = new KafkaConsumer<>(kafkaProperties.getConsumer().get(topics.get(0)));
             emitter.onCompletion(consumer::close);
             consumer.subscribe(topics);
             boolean exitLoop = false;
             while(!exitLoop) {
                 try {
-                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(5));
-                    for (ConsumerRecord<String, String> record : records) {
+                    ConsumerRecords<String, Object> records = consumer.poll(Duration.ofSeconds(5));
+                    for (ConsumerRecord<String, Object> record : records) {
                         emitter.send(record.value());
                     }
                     emitter.send(SseEmitter.event().comment(""));

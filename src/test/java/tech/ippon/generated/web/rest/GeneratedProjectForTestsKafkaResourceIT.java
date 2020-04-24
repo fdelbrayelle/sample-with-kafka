@@ -1,5 +1,6 @@
 package tech.ippon.generated.web.rest;
 
+import tech.ippon.generated.config.KafkaProperties;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -10,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.KafkaContainer;
-import tech.ippon.generated.config.KafkaProperties;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -39,7 +39,7 @@ public class GeneratedProjectForTestsKafkaResourceIT {
     }
 
     private static void startTestcontainer() {
-        kafkaContainer = new KafkaContainer("5.4.0");
+        kafkaContainer = new KafkaContainer("5.3.1");
         kafkaContainer.start();
     }
 
@@ -49,9 +49,9 @@ public class GeneratedProjectForTestsKafkaResourceIT {
         Map<String, Map<String, Object>> producerProps = getProducerProps();
         kafkaProperties.setProducer(new HashMap<>(producerProps));
 
-        Map<String, Map<String, Object>> props = getConsumerProps();
-        props.get("string").put("client.id", "default-client");
-        kafkaProperties.setConsumer(props);
+        Map<String, Map<String, Object>> consumerProps = getConsumerProps();
+        consumerProps.get("string").put("client.id", "default-client");
+        kafkaProperties.setConsumer(consumerProps);
 
         GeneratedProjectForTestsKafkaResource kafkaResource = new GeneratedProjectForTestsKafkaResource(kafkaProperties);
 

@@ -25,7 +25,7 @@ public class OrderProducer {
 
     public OrderProducer(@Value("${kafka.producer.order.name}") final String topicName, final KafkaProperties kafkaProperties) {
         this.topicName = topicName;
-        this.kafkaProducer = new KafkaProducer<>(kafkaProperties.getProducerConfiguration("order"));
+        this.kafkaProducer = new KafkaProducer<>(kafkaProperties.getProducer().get("order"));
     }
 
     @PostConstruct
