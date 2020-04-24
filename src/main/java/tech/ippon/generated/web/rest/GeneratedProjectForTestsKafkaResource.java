@@ -14,6 +14,7 @@ import tech.ippon.generated.config.KafkaProperties;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -27,17 +28,21 @@ public class GeneratedProjectForTestsKafkaResource {
     private final Logger log = LoggerFactory.getLogger(GeneratedProjectForTestsKafkaResource.class);
 
     private final KafkaProperties kafkaProperties;
-    private KafkaProducer<String, String> producer;
+    private Map<String, KafkaProducer<String, Object>> producers;
     private ExecutorService sseExecutorService = Executors.newCachedThreadPool();
 
-    public GeneratedProjectForTestsKafkaResource(KafkaProperties kafkaProperties) {
+    public GeneratedProjectForTestsKafkaResource(final KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
-        this.producer = new KafkaProducer<>(kafkaProperties.getProducerConfiguration("string"));
+        this.producers = new HashMap<>();
+        for (final String topicName : kafkaProperties.getProducer().keySet()) {
+            this.producers.put(topicName, new KafkaProducer<>(kafkaProperties.getProducerConfiguration(topicName)));
+        }
     }
 
     @PostMapping("/publish/{topic}")
     public PublishResult publish(@PathVariable String topic, @RequestParam(required = false) String key, @RequestParam String message) throws ExecutionException, InterruptedException {
         log.debug("REST request to send to Kafka topic {} with key {} the message : {}", topic, key, message);
+        final KafkaProducer<String, Object> producer = producers.get(topic);
         RecordMetadata metadata = producer.send(new ProducerRecord<>(topic, key, message)).get();
         return new PublishResult(metadata.topic(), metadata.partition(), metadata.offset(), Instant.ofEpochMilli(metadata.timestamp()));
     }

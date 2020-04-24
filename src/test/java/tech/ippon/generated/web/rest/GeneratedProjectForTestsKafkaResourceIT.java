@@ -60,13 +60,13 @@ public class GeneratedProjectForTestsKafkaResourceIT {
 
     @Test
     void producesMessages() throws Exception {
-        restMockMvc.perform(post("/api/generated-project-for-tests-kafka/publish/topic-string?message=value-produced"))
+        restMockMvc.perform(post("/api/generated-project-for-tests-kafka/publish/string?message=value-produced"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         Map<String, Object> consumerProps = new HashMap<>(getConsumerProps().get("string"));
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps);
-        consumer.subscribe(Collections.singletonList("topic-string"));
+        consumer.subscribe(Collections.singletonList("string"));
         ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
 
         assertEquals(1, records.count());
@@ -76,12 +76,12 @@ public class GeneratedProjectForTestsKafkaResourceIT {
 
     @Test
     void consumesMessages() throws Exception {
-        restMockMvc.perform(get("/api/generated-project-for-tests-kafka/consume?topic=topic-string"))
+        restMockMvc.perform(get("/api/generated-project-for-tests-kafka/consume?topic=string"))
             .andExpect(status().isOk())
             .andExpect(request().asyncStarted())
             .andReturn();
 
-        restMockMvc.perform(post("/api/generated-project-for-tests-kafka/publish/topic-string?message=value-to-consume"))
+        restMockMvc.perform(post("/api/generated-project-for-tests-kafka/publish/string?message=value-to-consume"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }

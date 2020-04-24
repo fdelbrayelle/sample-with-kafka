@@ -5,13 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.stereotype.Service;
 import tech.ippon.generated.config.KafkaProperties;
 import tech.ippon.generated.domain.Order;
 import tech.ippon.generated.service.kafka.GenericConsumer;
 
-@Configuration
+@Service
 public class OrderConsumer extends GenericConsumer<Order> {
 
     private final Logger log = LoggerFactory.getLogger(Order.class);
