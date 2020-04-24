@@ -164,16 +164,16 @@ kafka:
     order:
       name: order-topic
       enabled: true
-      '[key.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
-      '[value.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
+      '[key.deserializer]': tech.ippon.generated.service.kafka.deserializer.OrderDeserializer
+      '[value.deserializer]': tech.ippon.generated.service.kafka.deserializer.OrderDeserializer
       '[group.id]': generated-project-for-tests
       '[auto.offset.reset]': earliest
   producer:
     order:
       name: order-topic
       enabled: true
-      '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
-      '[value.serializer]': org.apache.kafka.common.serialization.StringSerializer
+      '[key.serializer]': tech.ippon.generated.service.kafka.serializer.OrderSerializer
+      '[value.serializer]': tech.ippon.generated.service.kafka.serializer.OrderSerializer
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

@@ -47,10 +47,11 @@ public class OrderProducer {
         kafkaProducer.close();
     }
 
-    @Scheduled(fixedRate = 1000)
-    public void testSend() {
-        Order order = new Order();
-        order.setAmount(BigDecimal.TEN);
-        this.send(order);
-    }
+    // For tests purposes (this method is not generated)
+//    @Scheduled(fixedRate = 1000)
+//    public void testSend() {
+//        Order order = new Order();
+//        order.setAmount(BigDecimal.TEN);
+//        this.send(order);
+//    }
 }
