@@ -107,16 +107,16 @@ jhipster:
 kafka:
   '[bootstrap.servers]': localhost:9092
   consumer:
-    string:
-      name: topic-string
+    order:
+      name: topic-order
       enabled: false
       '[key.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
       '[value.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
       '[group.id]': generated-project-for-tests
       '[auto.offset.reset]': earliest
   producer:
-    string:
-      name: topic-string
+    order:
+      name: topic-order
       enabled: false
       '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
       '[value.serializer]': org.apache.kafka.common.serialization.StringSerializer
