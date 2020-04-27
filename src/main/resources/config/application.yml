@@ -161,18 +161,30 @@ jhipster:
 kafka:
   '[bootstrap.servers]': localhost:9092
   consumer:
+    foo:
+      name: foo-topic
+      enabled: true
+      '[key.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
+      '[value.deserializer]': tech.ippon.generated.service.kafka.deserializer.FooDeserializer
+      '[group.id]': generated-project-for-tests
+      '[auto.offset.reset]': earliest
     order:
       name: order-topic
       enabled: true
-      '[key.deserializer]': tech.ippon.generated.service.kafka.deserializer.OrderDeserializer
+      '[key.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
       '[value.deserializer]': tech.ippon.generated.service.kafka.deserializer.OrderDeserializer
       '[group.id]': generated-project-for-tests
       '[auto.offset.reset]': earliest
   producer:
+    foo:
+      name: foo-topic
+      enabled: true
+      '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
+      '[value.serializer]': tech.ippon.generated.service.kafka.serializer.FooSerializer
     order:
       name: order-topic
       enabled: true
-      '[key.serializer]': tech.ippon.generated.service.kafka.serializer.OrderSerializer
+      '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
       '[value.serializer]': tech.ippon.generated.service.kafka.serializer.OrderSerializer
 # ===================================================================
 # Application specific properties

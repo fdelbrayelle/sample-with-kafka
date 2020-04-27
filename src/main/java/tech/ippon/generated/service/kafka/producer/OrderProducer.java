@@ -7,11 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import javax.annotation.PostConstruct;
-
 import tech.ippon.generated.config.KafkaProperties;
 import tech.ippon.generated.domain.Order;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 
 @Service
@@ -48,10 +47,10 @@ public class OrderProducer {
     }
 
     // For tests purposes (this method is not generated)
-//    @Scheduled(fixedRate = 1000)
-//    public void testSend() {
-//        Order order = new Order();
-//        order.setAmount(BigDecimal.TEN);
-//        this.send(order);
-//    }
+    @Scheduled(fixedRate = 1000)
+    public void testSend() {
+        Order order = new Order();
+        order.setAmount(BigDecimal.TEN);
+        this.send(order);
+    }
 }
