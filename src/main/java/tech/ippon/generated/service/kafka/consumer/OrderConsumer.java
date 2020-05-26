@@ -16,8 +16,8 @@ public class OrderConsumer extends GenericConsumer<Order> {
 
     private final Logger log = LoggerFactory.getLogger(Order.class);
 
-    public OrderConsumer(@Value("${kafka.consumer.order.name}") final String topic, final KafkaProperties kafkaProperties) {
-        super(topic, kafkaProperties.getConsumer().get("order"));
+    public OrderConsumer(@Value("${kafka.consumer.order.name}") final String topicName, final KafkaProperties kafkaProperties) {
+        super(topicName, kafkaProperties.getConsumer().get("order"), kafkaProperties.getPollingTimeout());
     }
 
     @Override

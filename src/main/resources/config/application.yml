@@ -158,36 +158,29 @@ jhipster:
     contact-email:
     license:
     license-url:
+
 kafka:
-  '[bootstrap.servers]': localhost:9092
+  bootstrap.servers: localhost:9092
+  polling.timeout: 10000
+  # There is a template topic naming convention below which can be changed.
+  # %3Cmessage_type%3E.%3Capplication_name%3E.%3Centity_name%3E with (all in snake_case):
+  # - %3Cmessage_type%3E: queuing, logging, tracking, etl/db, streaming, push, user...
+  # - %3Capplication_name%3E: the application base name
+  # - %3Centity_name%3E: the entity name which is consumed
   consumer:
-    foo:
-      name: foo-topic
-      enabled: true
-      '[key.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
-      '[value.deserializer]': tech.ippon.generated.service.kafka.deserializer.FooDeserializer
-      '[group.id]': generated-project-for-tests
-      '[auto.offset.reset]': earliest
     order:
-      name: order-topic
+      name: queuing.generated_project_for_tests.order
       enabled: true
       '[key.deserializer]': org.apache.kafka.common.serialization.StringDeserializer
       '[value.deserializer]': tech.ippon.generated.service.kafka.deserializer.OrderDeserializer
       '[group.id]': generated-project-for-tests
       '[auto.offset.reset]': earliest
   producer:
-    foo:
-      name: foo-topic
-      enabled: true
-      '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
-      '[value.serializer]': tech.ippon.generated.service.kafka.serializer.FooSerializer
     order:
-      name: order-topic
+      name: queuing.generated_project_for_tests.order
       enabled: true
       '[key.serializer]': org.apache.kafka.common.serialization.StringSerializer
       '[value.serializer]': tech.ippon.generated.service.kafka.serializer.OrderSerializer
-# ===================================================================
-# Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
 # to have type-safe configuration, like in the JHipsterProperties above
 #

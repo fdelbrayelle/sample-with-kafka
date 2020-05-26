@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
@@ -15,17 +16,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class GenericConsumer<T> implements Runnable {
 
-    public static final int POLL_TIMEOUT = 10_000;
+
     private final Logger log = LoggerFactory.getLogger(GenericConsumer.class);
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
     private final KafkaConsumer<String, T> consumer;
     private String topicName;
+    private final int pollingTimeout;
 
-    public GenericConsumer(final String topicName, final Map<String, Object> properties) {
+    public GenericConsumer(final String topicName, final Map<String, Object> properties, final int pollingTimeout) {
         this.topicName = topicName;
         this.consumer = new KafkaConsumer<>(properties);
+        this.pollingTimeout = pollingTimeout;
     }
 
     @PostConstruct
@@ -33,12 +36,17 @@ public abstract class GenericConsumer<T> implements Runnable {
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
 
+    @PreDestroy
+    public void destroy() {
+        shutdown();
+    }
+
     @Override
     public void run() {
         try {
             consumer.subscribe(Collections.singleton(topicName));
             while (!closed.get()) {
-                final ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
+                final ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(pollingTimeout));
                 for (final ConsumerRecord<String, T> record : records) {
                     handleMessage(record);
                 }
@@ -48,7 +56,7 @@ public abstract class GenericConsumer<T> implements Runnable {
             // Ignore exception if closing
             if (!closed.get()) throw e;
         } catch (final Exception e) {
-            log.error("An error occured while trying to poll records from topic!", e);
+            log.error("An error occurred while trying to poll records from topic!", e);
         } finally {
             consumer.close();
         }

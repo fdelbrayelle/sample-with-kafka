@@ -11,6 +11,11 @@ import { RouterModule } from '@angular/router';
       {
         path: 'order',
         loadChildren: () => import('./order/order.module').then(m => m.GeneratedProjectForTestsOrderModule)
+      },
+      {
+        path: 'upper-camel-clazz',
+        loadChildren: () =>
+          import('./upper-camel-clazz/upper-camel-clazz.module').then(m => m.GeneratedProjectForTestsUpperCamelClazzModule)
       }
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ])
